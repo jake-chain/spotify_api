@@ -1,0 +1,6 @@
+venv
+.idea
+storage
+__pycache__
+logs
+schema.mwb.bak
