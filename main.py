@@ -1,5 +1,5 @@
 import functions
-from User import User
+from models.User import User
 
 if __name__ == "__main__":
     # Limpa o terminal para uma melhor visualização
@@ -7,8 +7,6 @@ if __name__ == "__main__":
 
     # Leitura dos dados do usuário
     user = User.read_info()
-    print(user)
-    exit()
 
     # Listener para aguardar instruções do usuário
     functions.clear_terminal()

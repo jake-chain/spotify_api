@@ -93,7 +93,7 @@ class User(object):
     # Caso não tenha registro referente a esse usuário no banco de dados, libera a opção de criar um novo registro
     @staticmethod
     def read_info():
-        from database import select
+        from database.database import select
 
         # Leitura do ID do usuário
         username = input("Informe o ID do usuário: ")

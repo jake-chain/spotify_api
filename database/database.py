@@ -1,12 +1,18 @@
 from functions import get_error
 
+data_access = {
+    'user': "root",
+    'passwd': "123456",
+    'host': "localhost",
+    'db': "spotifyapi",
+}
+
 
 # Realiza a conexão com o banco de dados e retorna a instância da conexão
 def connect():
     try:
         import MySQLdb
-        import config
-        return MySQLdb.connect(user=config.user, passwd=config.passwd, host=config.host, db=config.db)
+        return MySQLdb.connect(user=data_access['user'], passwd=data_access['passwd'], host=data_access['host'], db=data_access['db'])
     except Exception as e:
         return get_error(e)
 
