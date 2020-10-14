@@ -123,63 +123,126 @@ def teste_dict_of_objects_to_dict_of_dict():
 
 
 def caca_palavras():
-    linhas = 15
-    colunas = 15
+    # Primeiro define o tamanho que será a matriz
+    linhas = 15  # Quantidade de linhas
+    colunas = 15  # Quantidade de colunas
 
-    matriz = []
+    matriz = []  # Variável que irá armazenar a matriz
+
+    # Definindo as palavras que terá no caça palavras
     palavras = ["rafaela", "apenas", "quero", "dizer", "vai", "dormir", "precisa", "descansar"]
 
+    # 1 - inicia as posições da matriz todas vazias
+    # Primeiro laço de repetição para iniciar as linhas
     for linha in range(linhas):
+        # Em cada linha, insere um vetor, tornando em uma matriz
         matriz.append([])
+        # Segundo laço de repetição para iniciar as colunas
         for coluna in range(colunas):
             matriz[linha].append("")
 
+    # 2 - Percorre as palavras definidas anteriormente para coloca-lás na matriz
     for palavra in palavras:
-        position = generate_random_position(matriz, palavra, linhas, colunas)
+        # Gera a posição inicial em que a palavra será colocada
+        position = gera_posicao(matriz, palavra, linhas, colunas)
         linha = position['linha']
         coluna = position['coluna']
 
+        # Para cada caractere contida na palavra, coloca em uma posição diferente da matriz
         for caractere in palavra:
             matriz[linha][coluna] = caractere
             coluna += 1
 
+    # 3 - Preenchendo os espaços vagos da matriz por letras aleatórias
     for linha in range(linhas):
         for coluna in range(colunas):
             if matriz[linha][coluna] == "":
-                # matriz[linha][coluna] = ''.join(random.choices(string.ascii_uppercase, k=1))
+                # Gerando uma letra aleatória e inserindo na matriz
+                matriz[linha][coluna] = ''.join(random.choices(string.ascii_uppercase, k=1))
+                # Apenas para teste
                 matriz[linha][coluna] = '-'
 
+    # 4 - Exibindo a matriz
     print_matriz(matriz)
 
 
 def print_matriz(matriz):
+    # Inicia a variável que guardará a matriz
     str_matriz = ""
+    # Percorrendo as linhas
     for i in range(len(matriz)):
+        # Percorrendo as colunas
         for j in range(len(matriz[i])):
+            # Gerando a linha da matriz
             str_matriz += f" {matriz[i][j]} "
+        # Inserindo uam quebra de linha para passar para próxima linha da matriz
         str_matriz += "\n"
+    # Imprimindo a variável que contêm a matriz
     print(str_matriz)
 
 
-def generate_random_position(matriz, palavra, linhas, colunas):
-    linha = randint(0, colunas - 1)
-    coluna = get_position(len(palavra), linhas)
+def gera_posicao(matriz, palavra, quantidade_linhas, quantidade_colunas):
+    while True:
+        # Apenas gera um número aleatória para a linha, o valor está entre 0 e a quantidade de colunas da matriz - 1
+        # (se a matriz contêm 10 colunas, a posição inicial sendo 0, o valor gerado deve ser até 9)
+        linha = randint(0, quantidade_linhas - 1)
 
-    if matriz[linha][coluna] == "":
+        coluna = randint(0, quantidade_colunas - 1)
+        while True:
+            # Se a posição inicial somada com o tamanho da palavra não ultrapassar o tamanho da matriz, então esse posição pode usada
+            if coluna + len(palavra) < quantidade_colunas:
+                break
+            # Se a coluna não pode ser usada, gera um novo valor
+            coluna = randint(0, quantidade_colunas - 1)
+
+        # Verifica se algumas posição gerada para a pavra está preenchida
+        usada = False
+        for coluna_atual in range(quantidade_colunas):
+            if matriz[linha][coluna_atual] != "":
+                usada = True
+
+        # Se não tá sendo usada, retorna as posições
+        if not usada:
+            return {
+                'linha': linha,
+                'coluna': coluna
+            }
+
+
+def gera_posicao_recursiva(matriz, palavra, linhas, colunas):
+    # Apenas gera um número aleatória para a linha, o valor está entre 0 e a quantidade de colunas da matriz - 1
+    # (se a matriz contêm 10 colunas, a posição inicial sendo 0, o valor gerado deve ser até 9)
+    linha = randint(0, colunas - 1)
+    # Usa a função para gerar a posição inicial da palavra
+    coluna = sei_la_recursivo(len(palavra), linhas)
+
+    # Verifica se algumas posição gerada para a pavra está preenchida
+    usada = False
+    for coluna_atual in range(colunas):
+        if matriz[linha][coluna_atual] != "":
+            usada = True
+
+    # Se alguma posição já tá sendo usada, tenta de novo chamando a mesma função
+    if usada:
+        return gera_posicao(matriz, palavra, linhas, colunas)
+    else:
+        # Se não tá sendo usada, retorna as posições
         return {
             'linha': linha,
             'coluna': coluna
         }
-    else:
-        return generate_random_position(matriz, palavra, linhas, colunas)
 
 
-def get_position(len_palavra, max_size):
-    linha = randint(0, max_size)
-    if linha + len_palavra < max_size:
+def sei_la_recursivo(tamanho_palavra, tamanho_maximo):
+    # Apenas gera um número aleatória para a linha, o valor está entre 0 e a quantidade de colunas da matriz - 1
+    # (se a matriz contêm 10 colunas, a posição inicial sendo 0, o valor gerado deve ser até 9)
+    linha = randint(0, tamanho_maximo - 1)
+    # Se a posição inicial somada com o tamanho da palavra não ultrapassar o tamanho da matriz, então esse posição pode usada
+    if linha + tamanho_palavra < tamanho_maximo:
         return linha
     else:
-        return get_position(len_palavra, max_size)
+        # Mas se ultrapassar o tamanho da matriz, então tenta gerar uma nova posição
+        return sei_la_recursivo(tamanho_palavra, tamanho_maximo)
 
 
 caca_palavras()
