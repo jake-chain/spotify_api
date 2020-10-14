@@ -8,7 +8,6 @@ data_access = {
 }
 
 
-# Realiza a conexão com o banco de dados e retorna a instância da conexão
 def connect():
     try:
         import MySQLdb
@@ -17,55 +16,53 @@ def connect():
         return get_error(e)
 
 
-# Realiza uma consulta no banco de dados
 def select(script, param=None, featchone=False, featchmany=None):
     try:
-        # Abrindo conexão com o banco de dados
         database = connect()
-        # Capturando a instância do cursor
         cursor = database.cursor()
-        # Executando o insert
         cursor.execute(script, param)
 
         if featchone:
-            # Lendo os resultados
             response = cursor.fetchone()
-            # Fechando conexão com o banco de dados
-            database.close()
-            # Retornando os resultados
-            return response
         elif featchmany is not None:
-            # Lendo os resultados
             response = cursor.fetchmany(int(featchmany))
-            # Fechando conexão com o banco de dados
-            database.close()
-            # Retornando os resultados
-            return response
         else:
-            # Lendo os resultados
             response = cursor.fetchall()
-            # Fechando conexão com o banco de dados
-            database.close()
-            # Retornando os resultados
-            return response
+
+        database.close()
+        return response
     except Exception as e:
         return get_error(e)
 
 
-# Realiza a inserção de dados no banco
-def insert(script, param=None) -> int or bool:
+def execute_script(script: str, param: tuple = None, returning_id: bool = False) -> bool or None:
     try:
-        # Abrindo conexão com o banco de dados
         database = connect()
-        # Capturando a instância do cursor
         cursor = database.cursor()
-        # Executando o insert
         cursor.execute(script, param)
-        # Salvando os dados
         database.commit()
-        # Fechando a conexão com a base de dados
         database.close()
-        # Retorna o ID criado
-        return cursor.lastrowid
+        return cursor.lastrowid if returning_id else True
+    except Exception as e:
+        return get_error(e)
+
+
+def insert(script: str, param: tuple) -> int or bool or None:
+    try:
+        return execute_script(script, param)
+    except Exception as e:
+        return get_error(e)
+
+
+def update(table: str, columns: str, where: str, param: tuple) -> bool or None:
+    try:
+        return execute_script(f"UPDATE {table} SET {columns} WHERE {where}", param)
+    except Exception as e:
+        return get_error(e)
+
+
+def delete(table: str, where: str) -> bool or None:
+    try:
+        return execute_script(f"DELETE FROM {table} WHERE {where}")
     except Exception as e:
         return get_error(e)
