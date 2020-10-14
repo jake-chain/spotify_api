@@ -1,3 +1,12 @@
+import random
+import string
+from random import randint
+
+"""
+===============================================================================
+"""
+
+
 def multiplication_table(min_multiplier: float = 1, max_multiplier: float = 10, min_multiplying: float = 1, max_multiplying: float = 10) -> str:
     """
     Função que retorna a tabuada de acordo com as configurações de parâmetro
@@ -58,6 +67,11 @@ def division_table(min_dividend: float = 1, max_dividend: float = 10, min_divide
     return table
 
 
+"""
+===============================================================================
+"""
+
+
 def convert_objects_to_dict(list_objects: dict) -> dict:
     """
     Nessa função, é recebido um dict de objects e retorna em formato de dict de dict
@@ -101,3 +115,71 @@ def teste_dict_of_objects_to_dict_of_dict():
     print(dict_of_object)
     print("\nEssa é a impressão usando a função de conversão")
     print(convert_objects_to_dict(dict_of_object))
+
+
+"""
+===============================================================================
+"""
+
+
+def caca_palavras():
+    linhas = 15
+    colunas = 15
+
+    matriz = []
+    palavras = ["rafaela", "apenas", "quero", "dizer", "vai", "dormir", "precisa", "descansar"]
+
+    for linha in range(linhas):
+        matriz.append([])
+        for coluna in range(colunas):
+            matriz[linha].append("")
+
+    for palavra in palavras:
+        position = generate_random_position(matriz, palavra, linhas, colunas)
+        linha = position['linha']
+        coluna = position['coluna']
+
+        for caractere in palavra:
+            matriz[linha][coluna] = caractere
+            coluna += 1
+
+    for linha in range(linhas):
+        for coluna in range(colunas):
+            if matriz[linha][coluna] == "":
+                # matriz[linha][coluna] = ''.join(random.choices(string.ascii_uppercase, k=1))
+                matriz[linha][coluna] = '-'
+
+    print_matriz(matriz)
+
+
+def print_matriz(matriz):
+    str_matriz = ""
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            str_matriz += f" {matriz[i][j]} "
+        str_matriz += "\n"
+    print(str_matriz)
+
+
+def generate_random_position(matriz, palavra, linhas, colunas):
+    linha = randint(0, colunas - 1)
+    coluna = get_position(len(palavra), linhas)
+
+    if matriz[linha][coluna] == "":
+        return {
+            'linha': linha,
+            'coluna': coluna
+        }
+    else:
+        return generate_random_position(matriz, palavra, linhas, colunas)
+
+
+def get_position(len_palavra, max_size):
+    linha = randint(0, max_size)
+    if linha + len_palavra < max_size:
+        return linha
+    else:
+        return get_position(len_palavra, max_size)
+
+
+caca_palavras()
